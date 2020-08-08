@@ -50,7 +50,6 @@ namespace QnAProcessor
                 }
 
                 var shemaDef = SchemaDefinition.Create(typeof(MLEntry));
-                shemaDef["PreviousIntents"].ColumnType = new VectorDataViewType(TextDataViewType.Instance);
                 var data = _mlContext.Data.LoadFromEnumerable(qnaEnum);
 
                 buildAndTrainModel(data, _pipeline);

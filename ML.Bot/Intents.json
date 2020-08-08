@@ -1,33 +1,49 @@
-[
-  {
-    "Intent": "FlightStatus",
-    "Text": [
-      "Flight Status",
-      "What is the status of my flight"
-    ],
-    "PreviousIntents": []
-  },
-  {
-    "Intent": "FlightStatusByAirport",
-    "Text": [
-      "Airport",
-      "I dont have the Flight Number"
-    ],
-    "PreviousIntents": [ "FlightStatus" ]
-  },
-  {
-    "Intent": "FlightStatusByFlightNumber",
-    "Text": [
-      "Flight Number",
-      "I only have the Flight Number"
-    ],  
-    "PreviousIntents": [ "FlightStatus" ]
-  },
-  {
-    "Intent": "CancelBooking",
-    "Text": [
-      "Cancel Booking"
-    ],
-    "PreviousIntents": []
-  }
-]
+{
+	"Time": [
+		"What time is it?",
+		"Whats the times",
+		"Time Check",
+		"Do you have the time"
+	],
+  "Date": [
+    "What is the date?",
+    "What's the date",
+    "Date Check",
+    "Do you have the date"
+  ],
+	"None": [
+		"Hello",
+		"Hey, how are you?",
+		"Are you doing good?",
+		"How are you feeling?",
+		"How are you doing?",
+		"How are ya?",
+		"How are things?",
+		"How are you?",
+		"How are you going?",
+		"How art thou?",
+		"Greetings, Bot. How are you doing?",
+		"Are you feeling well?",
+		"Are you feeling OK?",
+		"Are you feeling good?",
+		"Are you doing well?",
+		"Are you doing OK?",
+		"How are things going?",
+		"How's it going?",
+		"Say, how are you doing?",
+		"How's tricks?",
+		"How's the day treating you?",
+		"How's life?",
+		"How's life treating you?",
+		"How are you today?",
+		"How's it hangin?",
+		"Yo, how are you?",
+		"How'd you sleep last night?",
+		"How you doing?",
+		"How you doing bot?",
+		"How ya doing?",
+		"How is the day treating you?",
+		"How is the day treating ya?",
+		"How's it hanging?"
+	]
+}

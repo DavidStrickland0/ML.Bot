@@ -3,7 +3,7 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio EchoBot v4.9.2
 
-using ContextualizedIntentRecognizer;
+using IntentRecognizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -37,12 +37,26 @@ namespace ML.Bot
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, BotActivityHandler>();
 
-            IRecognizerMachineLearningFacade mlRecognizerFacade = (new RecognizerMachineLearningFacade(new MLContext()));
+            services.AddTransient<IConversationManager, ConversationManager>();
+            services.AddTransient<IWeatheMessageHandler, WeatherMessageHandler>();
+
+            IIntentRecognizerFacade mlRecognizerFacade = (new IntentRecognizerFacade(new MLContext()));
             services.AddSingleton(mlRecognizerFacade);
 
             IQnAMachineLearningFacade mlQnaFacade = (new QnAMachineLearningFacade(new MLContext()));
-            mlQnaFacade.Train(Configuration["QnAFIle"]);
+            var qnAFileName = Configuration["QnAFile"];
+            mlQnaFacade.Train(qnAFileName);
             services.AddSingleton(mlQnaFacade);
+
+            IIntentRecognizerFacade mlIntentFacade = (new IntentRecognizerFacade(new MLContext()));
+            var intentFileName = Configuration["IntentFile"];
+            mlIntentFacade.Train(intentFileName);
+            services.AddSingleton(mlIntentFacade);
+
+            var storage = new MemoryStorage();
+            // Create the Conversation state passing in the storage layer.
+            var conversationState = new ConversationState(storage);
+            services.AddSingleton(conversationState);
 
         }
 

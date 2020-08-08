@@ -1,12 +1,9 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-//
-// Generated with Bot Builder V4 SDK Template for Visual Studio EchoBot v4.9.2
-
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ContextualizedIntentRecognizer;
+using Google.Protobuf.WellKnownTypes;
+using IntentRecognizer;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using QnAProcessor;
@@ -16,20 +13,31 @@ namespace ML.Bot.Bots
     public class BotActivityHandler : ActivityHandler
     {
         private IQnAMachineLearningFacade _qnaFacade;
-        private IRecognizerMachineLearningFacade _intentFacade;
+        private IIntentRecognizerFacade _intentFacade;
+        private IWeatheMessageHandler _weatherHandler;
+        private IConversationManager _conversationManager;
+        private ConversationState _conversationState;
 
-        public BotActivityHandler(IQnAMachineLearningFacade qnaFacade, IRecognizerMachineLearningFacade intentFacade)
+        public BotActivityHandler(
+            IConversationManager conversationManager,
+            ConversationState conversationState)
         {
-            _qnaFacade = qnaFacade;
-            _intentFacade = intentFacade;
-
+            _conversationManager = conversationManager;
+            _conversationState = conversationState;
         }
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var replyText = _qnaFacade.Predict(turnContext.Activity.Text);
-            //var intent = _intentFacade.Predict(turnContext.Activity.Text,null);
+            var conversationStateAccessors = _conversationState.CreateProperty<ConversationData>(nameof(ConversationData));
+            var conversationData = await conversationStateAccessors.GetAsync(turnContext, cancellationToken: cancellationToken);
+            var response = await _conversationManager.ProcessMessageAsync(conversationData,turnContext.Activity.Text, cancellationToken);
 
-            await turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
+            while (response.Count > 0)
+            {
+                var responseText = response.Dequeue();
+                await turnContext.SendActivityAsync(MessageFactory.Text(responseText, responseText), cancellationToken);
+            }
+
+            await _conversationState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
@@ -43,5 +51,6 @@ namespace ML.Bot.Bots
                 }
             }
         }
+
     }
 }

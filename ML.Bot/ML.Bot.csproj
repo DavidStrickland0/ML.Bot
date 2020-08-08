@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ContextualizedIntentRecognizer\ContextualizedIntentRecognizer.csproj" />
+    <ProjectReference Include="..\IntentRecognizer\IntentRecognizer.csproj" />
     <ProjectReference Include="..\QnAProcessor\QnAProcessor.csproj" />
   </ItemGroup>
 

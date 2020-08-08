@@ -9,6 +9,5 @@ namespace QnAProcessor
     {
         public string Question { get; set; }
         public string Answer { get; set; }
-        public string[] PreviousIntents { get; set; } = new[] {"", "", "", "", ""};
     }
 }
