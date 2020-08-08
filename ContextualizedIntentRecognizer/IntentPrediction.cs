@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.ML.Data;
 
-namespace QnAProcessor
+namespace ContextualizedIntentRecognizer
 {
-    public class AnswerPrediction
+    public class IntentPrediction
     {
         [ColumnName("PredictedLabel")]
-        public string Answer { get; set; }
+        public string Intent { get; set; }
 
         [ColumnName("Score")]
         public Single[] Score { get; set; }

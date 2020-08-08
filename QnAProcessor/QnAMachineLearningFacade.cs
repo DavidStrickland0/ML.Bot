@@ -9,17 +9,18 @@ using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
 using Microsoft.ML.Transforms.Text;
+using Newtonsoft.Json;
 using Tensorflow;
 
 namespace QnAProcessor
 {
-    public class QnAMachineLearningFacade: IMachineLearningFacade
+    public class QnAMachineLearningFacade: IQnAMachineLearningFacade
     {
         private MLContext _mlContext;
         private ValueToKeyMappingEstimator _answerKeyEstimator;
         private EstimatorChain<ITransformer> _pipeline;
-        private TransformerChain<KeyToValueMappingTransformer> _trainedModel;
-        private PredictionEngine<QnAEntry, AnswerPrediction> _predictionEngine;
+        private ITransformer _trainedModel;
+        private PredictionEngine<MLEntry, AnswerPrediction> _predictionEngine;
 
         public QnAMachineLearningFacade(MLContext mlContext)
         {
@@ -28,45 +29,54 @@ namespace QnAProcessor
 
         public void Train(string path)
         {
-            var data = _mlContext.Data.LoadFromTextFile<QnAEntry>(path, new TextLoader.Options() { HasHeader = true });
+            JsonSerializer serializer = new JsonSerializer();
+            using (StreamReader file = File.OpenText(path))
+            {
+                var qnaEnum = new List<MLEntry>();
 
-            _pipeline = processData(path);
+                var qnaDictionary =
+                    (Dictionary<string, List<string>>) serializer.Deserialize(file,
+                        typeof(Dictionary<string, List<string>>));
+                foreach (var answer in qnaDictionary.Keys)
+                {
+                    foreach (var question in qnaDictionary[answer])
+                    {
+                        qnaEnum.Add(new MLEntry()
+                        {
+                            Question = question,
+                            Answer = answer
+                        });
+                    }
+                }
 
-            buildAndTrainModel(data, _pipeline);
+                var shemaDef = SchemaDefinition.Create(typeof(MLEntry));
+                shemaDef["PreviousIntents"].ColumnType = new VectorDataViewType(TextDataViewType.Instance);
+                var data = _mlContext.Data.LoadFromEnumerable(qnaEnum);
 
+                buildAndTrainModel(data, _pipeline);
+            }
         }
 
         private void buildAndTrainModel(IDataView data, EstimatorChain<ITransformer> pipeline)
         {
-            var trainingPipeline = pipeline.Append(_mlContext.MulticlassClassification.Trainers.SdcaMaximumEntropy("Label", "QuestionFeaturized"))
-                .Append(_mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
-            _trainedModel = trainingPipeline.Fit(data);
-            _predictionEngine = _mlContext.Model.CreatePredictionEngine<QnAEntry, AnswerPrediction>(_trainedModel);
 
-        }
-
-        private EstimatorChain<ITransformer> processData(string path)
-        {
-            if (!System.IO.File.Exists(path))
-            {
-                throw new ApplicationException("path invalid");
-            }
-
-
-            _answerKeyEstimator = _mlContext.Transforms.Conversion.MapValueToKey(
-                inputColumnName: nameof(QnAEntry.Answer),
-                outputColumnName: "Label");
-
-            return
-                _answerKeyEstimator
-                    .Append(_mlContext.Transforms.Text.FeaturizeText(inputColumnName: nameof(QnAEntry.Question),
+            var trainingPipeline =
+                _mlContext.Transforms.Conversion
+                    .MapValueToKey(inputColumnName: nameof(MLEntry.Answer), outputColumnName: "Label")
+                    .Append(_mlContext.Transforms.Text.FeaturizeText(inputColumnName: nameof(MLEntry.Question),
                         outputColumnName: "QuestionFeaturized"))
-                    .AppendCacheCheckpoint(_mlContext);
+                    .AppendCacheCheckpoint(_mlContext)
+                    .Append(_mlContext.MulticlassClassification.Trainers.SdcaMaximumEntropy("Label", "QuestionFeaturized"))
+                    .Append(_mlContext.Transforms.Conversion.MapKeyToValue("PredictedLabel"));
+            _trainedModel = trainingPipeline.Fit(data);
+            
+            _predictionEngine = _mlContext.Model.CreatePredictionEngine<MLEntry, AnswerPrediction>(_trainedModel);
+
         }
 
-        public string Predict(string question)
+        public string Predict(string text)
         {
-            var entry = new QnAEntry(){Question=question};
+            var entry = new MLEntry(){Question= text };
 
             var prediction = _predictionEngine.Predict(entry);
             return prediction.Answer;

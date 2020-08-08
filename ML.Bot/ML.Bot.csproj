@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ContextualizedIntentRecognizer\ContextualizedIntentRecognizer.csproj" />
     <ProjectReference Include="..\QnAProcessor\QnAProcessor.csproj" />
   </ItemGroup>
 
@@ -19,11 +20,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-    <ItemGroup>
-      <None Update="QnA.tsv">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio EchoBot v4.9.2
 
+using ContextualizedIntentRecognizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Bot.Builder;
@@ -34,13 +35,15 @@ namespace ML.Bot
             services.AddSingleton<IBotFrameworkHttpAdapter, AdapterWithErrorHandler>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, QnABot>();
+            services.AddTransient<IBot, BotActivityHandler>();
 
-            services.AddSingleton<IQnALibrary, QnALibrary>();
+            IRecognizerMachineLearningFacade mlRecognizerFacade = (new RecognizerMachineLearningFacade(new MLContext()));
+            services.AddSingleton(mlRecognizerFacade);
 
-            var mlFacade = (new QnAMachineLearningFacade(new MLContext()));
-            mlFacade.Train("QnA.tsv");
-            services.AddSingleton<IMachineLearningFacade>(mlFacade);
+            IQnAMachineLearningFacade mlQnaFacade = (new QnAMachineLearningFacade(new MLContext()));
+            mlQnaFacade.Train(Configuration["QnAFIle"]);
+            services.AddSingleton(mlQnaFacade);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

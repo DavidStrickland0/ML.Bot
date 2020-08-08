@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.ML;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace QnAProcessor.Tests
@@ -16,8 +18,7 @@ namespace QnAProcessor.Tests
         public void Setup()
         {
 
-            var resourceName = "QnA.tsv";
-
+            var resourceName = "QnA.json";
             _facade = new QnAMachineLearningFacade(new MLContext());
             _facade.Train(System.IO.Path.Combine(resourceName));
         }
@@ -26,7 +27,6 @@ namespace QnAProcessor.Tests
         [TestCase("Can you pee?", "I don't have a body.")]
         public void LoadQnALibrary(string question, string answer)
         {
-
             var response = _facade.Predict(question);
             Assert.AreEqual(answer,response);
         }

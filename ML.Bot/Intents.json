@@ -1,0 +1,33 @@
+[
+  {
+    "Intent": "FlightStatus",
+    "Text": [
+      "Flight Status",
+      "What is the status of my flight"
+    ],
+    "PreviousIntents": []
+  },
+  {
+    "Intent": "FlightStatusByAirport",
+    "Text": [
+      "Airport",
+      "I dont have the Flight Number"
+    ],
+    "PreviousIntents": [ "FlightStatus" ]
+  },
+  {
+    "Intent": "FlightStatusByFlightNumber",
+    "Text": [
+      "Flight Number",
+      "I only have the Flight Number"
+    ],  
+    "PreviousIntents": [ "FlightStatus" ]
+  },
+  {
+    "Intent": "CancelBooking",
+    "Text": [
+      "Cancel Booking"
+    ],
+    "PreviousIntents": []
+  }
+]

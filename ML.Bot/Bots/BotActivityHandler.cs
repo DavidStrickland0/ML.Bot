@@ -6,23 +6,29 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ContextualizedIntentRecognizer;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using QnAProcessor;
 
 namespace ML.Bot.Bots
 {
-    public class QnABot : ActivityHandler
+    public class BotActivityHandler : ActivityHandler
     {
-        private IMachineLearningFacade _facade;
+        private IQnAMachineLearningFacade _qnaFacade;
+        private IRecognizerMachineLearningFacade _intentFacade;
 
-        public QnABot(IMachineLearningFacade facade)
+        public BotActivityHandler(IQnAMachineLearningFacade qnaFacade, IRecognizerMachineLearningFacade intentFacade)
         {
-            _facade = facade;
+            _qnaFacade = qnaFacade;
+            _intentFacade = intentFacade;
+
         }
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var replyText = _facade.Predict(turnContext.Activity.Text);
+            var replyText = _qnaFacade.Predict(turnContext.Activity.Text);
+            //var intent = _intentFacade.Predict(turnContext.Activity.Text,null);
+
             await turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
         }
 

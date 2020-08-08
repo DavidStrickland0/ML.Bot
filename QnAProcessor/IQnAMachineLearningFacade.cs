@@ -8,9 +8,9 @@ using Microsoft.ML.Data;
 
 namespace QnAProcessor
 {
-    public interface IMachineLearningFacade
+    public interface IQnAMachineLearningFacade
     {
         void Train(string path);
-        string Predict(string question);
+        string Predict(string text);
     }
 }
