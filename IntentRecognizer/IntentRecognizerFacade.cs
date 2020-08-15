@@ -65,13 +65,12 @@ namespace IntentRecognizer
 
         }
 
-        public (IntentEnum, Dictionary<string, List<object>>) Predict(string text)
+        public (string, Dictionary<string, IList<object>>) Predict(string text)
         {
             var entry = new MLEntry() { Statement = text };
 
             var prediction = _predictionEngine.Predict(entry);
-            Enum.TryParse<IntentEnum>(prediction.Intent,out var result);
-            return (result,null);
+            return (prediction.Intent, null);
         }
     }
 }

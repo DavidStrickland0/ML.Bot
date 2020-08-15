@@ -9,13 +9,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using IntentRecognizer;
+using Microsoft.Bot.Builder;
 
 namespace ML.Bot
 {
-    internal interface IWeatherIntentHandler
+    public interface IIntentHandler
     {
-        Task<(IntentResult, string)> HandleAsync(string message);
+        Task<(IntentResult, Queue<string>)> HandleMessageAsync(
+            IList<string> activeIntents,
+            ITurnContext turnContext,
+            CancellationToken cancellationToken
+        );
     }
 }

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QnAProcessor", "QnAProcesso
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QnAProcessor.Tests", "QnAProcessor.Tests\QnAProcessor.Tests.csproj", "{E425F4BA-5813-4514-ADEC-011CD0D039A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntentRecognizer", "IntentRecognizer\IntentRecognizer.csproj", "{76CE10ED-AC20-46EB-9550-AD29ED9DFC36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntentRecognizer", "IntentRecognizer\IntentRecognizer.csproj", "{76CE10ED-AC20-46EB-9550-AD29ED9DFC36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML.Bot.Core", "ML.Bot.Core\ML.Bot.Core.csproj", "{7F20E2F7-DEA9-4772-A33A-50AC028FF63C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{76CE10ED-AC20-46EB-9550-AD29ED9DFC36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76CE10ED-AC20-46EB-9550-AD29ED9DFC36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76CE10ED-AC20-46EB-9550-AD29ED9DFC36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F20E2F7-DEA9-4772-A33A-50AC028FF63C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F20E2F7-DEA9-4772-A33A-50AC028FF63C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F20E2F7-DEA9-4772-A33A-50AC028FF63C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F20E2F7-DEA9-4772-A33A-50AC028FF63C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

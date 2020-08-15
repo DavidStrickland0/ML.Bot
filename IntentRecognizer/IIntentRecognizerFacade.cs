@@ -5,6 +5,6 @@ namespace IntentRecognizer
     public interface IIntentRecognizerFacade
     {
         void Train(string path);
-        (IntentEnum, Dictionary<string, List<object>>) Predict(string text);
+        (string, Dictionary<string, IList<object>>) Predict(string text);
     }
 }

@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using IntentRecognizer;
+using Microsoft.Bot.Builder;
+using ML.Bot.Core;
 
 namespace ML.Bot
 {
-    class WeatherIntentHandler : IWeatherIntentHandler
+    class WeatherIntentHandler : IntentHandler
     {
         private IOpenWeatherApiFacade _openWeatherApiFacade;
 
-        public WeatherIntentHandler(IOpenWeatherApiFacade openWeatherApiFacade)
+        public WeatherIntentHandler(IOpenWeatherApiFacade openWeatherApiFacade, ConversationState conversationState,
+            IComponentContext context) : base(conversationState,context)
         {
             _openWeatherApiFacade = openWeatherApiFacade;
         }
@@ -27,9 +32,21 @@ namespace ML.Bot
             return entities;
         }
 
-        public async Task<(IntentResult, string)> HandleAsync(string message)
+        protected async override Task<(string, Dictionary<string, IList<object>>)> PredictAsync(string message, Dictionary<string, IList<object>> entities)
         {
-            Dictionary<string, List<object>> entities = extractEntities(message);
+            var result = await base.PredictAsync(message, entities);
+            if (message.Contains("Houston"))
+            {
+                result.Item2 = entities??new Dictionary<string, IList<object>>();
+                result.Item2.Add("City", new List<object>() { "Houston" });
+            }
+
+            return result;
+        }
+
+        protected async override Task<(IntentResult, Queue<string>)> HandleIntentAsync(string intent, Dictionary<string, IList<object>> entities, ITurnContext turnContext,
+            CancellationToken cancellationToken)
+        {
             if (entities != null && entities.ContainsKey("City"))
             {
                 var builder = new StringBuilder();
@@ -38,12 +55,16 @@ namespace ML.Bot
                     builder.Append(await _openWeatherApiFacade.GetCurrentWeatherAsync(city.ToString()));
                 }
 
-                return (IntentResult.Complete,builder.ToString());
+                var que = new Queue<string>();
+                que.Enqueue(builder.ToString());
+                return (IntentResult.Complete, que);
             }
             else
             {
                 //Pushes Intent Onto Stack
-                return (IntentResult.Waiting,"What City did you want to check the weather in?");
+                var que = new Queue<string>();
+                que.Enqueue("What City did you want to check the weather in?");
+                return (IntentResult.Waiting, que);
             }
         }
 
