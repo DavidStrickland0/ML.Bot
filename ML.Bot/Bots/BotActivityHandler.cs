@@ -12,11 +12,8 @@ namespace ML.Bot.Bots
 {
     public class BotActivityHandler : ActivityHandler
     {
-        private IQnAMachineLearningFacade _qnaFacade;
-        private IIntentRecognizerFacade _intentFacade;
-        private IWeatheMessageHandler _weatherHandler;
-        private IConversationManager _conversationManager;
-        private ConversationState _conversationState;
+        private readonly IConversationManager _conversationManager;
+        private readonly ConversationState _conversationState;
 
         public BotActivityHandler(
             IConversationManager conversationManager,
@@ -28,8 +25,9 @@ namespace ML.Bot.Bots
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var conversationStateAccessors = _conversationState.CreateProperty<ConversationData>(nameof(ConversationData));
-            var conversationData = await conversationStateAccessors.GetAsync(turnContext, cancellationToken: cancellationToken);
-            var response = await _conversationManager.ProcessMessageAsync(conversationData,turnContext.Activity.Text, cancellationToken);
+            var conversationData = await conversationStateAccessors.GetAsync(turnContext, () => new ConversationData(), cancellationToken: cancellationToken);
+           
+                var response = await _conversationManager.ProcessMessageAsync(conversationData,turnContext.Activity.Text, cancellationToken);
 
             while (response.Count > 0)
             {

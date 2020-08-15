@@ -1,16 +1,23 @@
 {
+	"Weather": [
+		"What's the weather like?",
+		"Weather",
+		"Whats the Weather Like in Houston?",
+		"Whats the Weather Like in London?",
+    "Whats the Weather Like in Hong Kong?"
+  ],
 	"Time": [
 		"What time is it?",
 		"Whats the times",
 		"Time Check",
 		"Do you have the time"
 	],
-  "Date": [
-    "What is the date?",
-    "What's the date",
-    "Date Check",
-    "Do you have the date"
-  ],
+	"Date": [
+		"What is the date?",
+		"What's the date",
+		"Date Check",
+		"Do you have the date"
+	],
 	"None": [
 		"Hello",
 		"Hey, how are you?",

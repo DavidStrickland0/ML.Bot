@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 
 namespace ML.Bot
 {
-    public class ConversationData
+    public enum IntentResult
     {
-        public List<string> ActiveIntent { get; internal set; } = new List<string>();
+        Complete,
+        Waiting,
+        None
     }
 }

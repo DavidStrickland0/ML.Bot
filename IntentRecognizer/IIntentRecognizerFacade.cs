@@ -1,8 +1,10 @@
-﻿namespace IntentRecognizer
+﻿using System.Collections.Generic;
+
+namespace IntentRecognizer
 {
     public interface IIntentRecognizerFacade
     {
         void Train(string path);
-        IntentEnum Predict(string text);
+        (IntentEnum, Dictionary<string, List<object>>) Predict(string text);
     }
 }

@@ -8,6 +8,7 @@ namespace IntentRecognizer
     {
         None,
         Time,
-        Date
+        Date,
+        Weather
     }
 }

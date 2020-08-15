@@ -3,6 +3,8 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio EchoBot v4.9.2
 
+using System;
+using System.Net.Http;
 using IntentRecognizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,7 +40,6 @@ namespace ML.Bot
             services.AddTransient<IBot, BotActivityHandler>();
 
             services.AddTransient<IConversationManager, ConversationManager>();
-            services.AddTransient<IWeatheMessageHandler, WeatherMessageHandler>();
 
             IIntentRecognizerFacade mlRecognizerFacade = (new IntentRecognizerFacade(new MLContext()));
             services.AddSingleton(mlRecognizerFacade);
@@ -57,6 +58,14 @@ namespace ML.Bot
             // Create the Conversation state passing in the storage layer.
             var conversationState = new ConversationState(storage);
             services.AddSingleton(conversationState);
+
+            //Open Weather Api Facade
+            var httpClient = new HttpClient();
+            var openWeatherApiKey = Configuration["OpenWeatherApiKey"];
+            IOpenWeatherApiFacade openWeatherApiFacade = new OpenWeatherApiFacade(openWeatherApiKey, httpClient);
+            services.AddSingleton(openWeatherApiFacade);
+
+            services.AddSingleton<IWeatherIntentHandler,WeatherIntentHandler>();
 
         }
 
@@ -81,4 +90,5 @@ namespace ML.Bot
             // app.UseHttpsRedirection();
         }
     }
+
 }
