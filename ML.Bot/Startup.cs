@@ -5,6 +5,7 @@
 
 using System;
 using System.Net.Http;
+using Autofac;
 using IntentRecognizer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.ML;
 using ML.Bot.Bots;
+using ML.Bot.IntentHandlers;
 using QnAProcessor;
 
 namespace ML.Bot
@@ -39,8 +41,6 @@ namespace ML.Bot
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, BotActivityHandler>();
 
-            services.AddTransient<IConversationManager, ConversationManager>();
-
             IIntentRecognizerFacade mlRecognizerFacade = (new IntentRecognizerFacade(new MLContext()));
             services.AddSingleton(mlRecognizerFacade);
 
@@ -64,9 +64,20 @@ namespace ML.Bot
             var openWeatherApiKey = Configuration["OpenWeatherApiKey"];
             IOpenWeatherApiFacade openWeatherApiFacade = new OpenWeatherApiFacade(openWeatherApiKey, httpClient);
             services.AddSingleton(openWeatherApiFacade);
+        }
 
-            services.AddSingleton<IWeatherIntentHandler,WeatherIntentHandler>();
-
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            // Register your own things directly with Autofac, like:
+            builder.RegisterType<WeatherIntentHandler>()
+                .Named<IIntentHandler>("Weather")
+                .SingleInstance();
+            builder.RegisterType<DateIntentHandler>()
+                .Named<IIntentHandler>("Date")
+                .SingleInstance();
+            builder.RegisterType<TimeIntentHandler>()
+                .Named<IIntentHandler>("Time")
+                .SingleInstance();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
