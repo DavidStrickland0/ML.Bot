@@ -9,7 +9,7 @@ using IntentRecognizer;
 using Microsoft.Bot.Builder;
 using ML.Bot.Core;
 
-namespace ML.Bot
+namespace ML.Bot.IntentHandlers
 {
     class WeatherIntentHandler : IntentHandler
     {

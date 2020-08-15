@@ -26,7 +26,6 @@ namespace ML.Bot.Core
         {
             _conversationState = conversationState;
             _context = context;
-            _qnaFacade = context.Resolve<IQnAMachineLearningFacade>();
             _intentFacade = context.Resolve<IIntentRecognizerFacade>();
         }
 

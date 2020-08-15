@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.ML;
 using ML.Bot.Bots;
+using ML.Bot.IntentHandlers;
 using QnAProcessor;
 
 namespace ML.Bot
@@ -70,6 +71,12 @@ namespace ML.Bot
             // Register your own things directly with Autofac, like:
             builder.RegisterType<WeatherIntentHandler>()
                 .Named<IIntentHandler>("Weather")
+                .SingleInstance();
+            builder.RegisterType<DateIntentHandler>()
+                .Named<IIntentHandler>("Date")
+                .SingleInstance();
+            builder.RegisterType<TimeIntentHandler>()
+                .Named<IIntentHandler>("Time")
                 .SingleInstance();
         }
 
