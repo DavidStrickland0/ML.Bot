@@ -28,7 +28,7 @@ namespace QnAProcessor.Tests
         public void LoadQnALibrary(string question, string answer)
         {
             var response = _facade.Predict(question);
-            Assert.AreEqual(answer,response);
+            Assert.Equals(answer,response);
         }
     }
 }
